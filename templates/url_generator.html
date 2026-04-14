@@ -303,7 +303,7 @@
 
             const params = new URLSearchParams();
             params.set('host', host);
-            params.set('url', url);
+            params.set('d', url);
             if (redirectStream) {
                 params.set('redirect_stream', 'true');
             }
@@ -311,7 +311,7 @@
                 params.set('api_password', apiPassword);
             }
 
-            result.value = `${buildBaseUrl()}/extractor/video?${params.toString()}`;
+            result.value = `${buildBaseUrl()}/extractor/video.m3u8?${params.toString()}`;
         }
 
         async function generateBatch() {

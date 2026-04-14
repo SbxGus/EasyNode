@@ -1536,8 +1536,10 @@ class HLSProxy:
                     "message": "EasyProxy Extractor API",
                     "usage": {
                         "endpoint": "/extractor/video",
+                        "host_endpoint": "/extractor/video.m3u8",
                         "parameters": {
-                            "url": "(Required) URL to extract. Supports plain text, URL encoded, or Base64.",
+                            "d": "(Required) URL to extract. Supports plain text, URL encoded, or Base64.",
+                            "url": "(Alias) Same as 'd'.",
                             "host": "(Optional) Force specific extractor (bypass auto-detect).",
                             "redirect_stream": "(Optional) 'true' to redirect to stream, 'false' for JSON.",
                             "api_password": "(Optional) API Password if configured.",
@@ -1573,9 +1575,9 @@ class HLSProxy:
                         "f16px",
                     ],
                     "examples": [
-                        f"{request.scheme}://{request.host}/extractor/video?url=https://vavoo.to/channel/123",
-                        f"{request.scheme}://{request.host}/extractor/video?host=vavoo&url=https://custom-link.com",
-                        f"{request.scheme}://{request.host}/extractor/video?url=BASE64_STRING",
+                        f"{request.scheme}://{request.host}/extractor/video?d=https://vavoo.to/channel/123",
+                        f"{request.scheme}://{request.host}/extractor/video.m3u8?host=vavoo&d=https://custom-link.com",
+                        f"{request.scheme}://{request.host}/extractor/video?d=BASE64_STRING",
                     ],
                 }
                 return web.json_response(help_response)
@@ -2825,6 +2827,19 @@ class HLSProxy:
                     "get": {
                         "summary": "Extractor compatibility endpoint",
                         "description": "MediaFlow-compatible alias for video extractor requests.",
+                        "parameters": [
+                            {"name": "host", "in": "query", "schema": {"type": "string"}},
+                            {"name": "url", "in": "query", "schema": {"type": "string"}},
+                            {"name": "api_password", "in": "query", "schema": {"type": "string"}},
+                        ],
+                        "responses": {"200": {"description": "Extractor response"}},
+                        **({"security": security} if requires_password else {}),
+                    }
+                },
+                "/extractor/video.m3u8": {
+                    "get": {
+                        "summary": "Extractor compatibility endpoint with m3u8 suffix",
+                        "description": "Alias for host-forced extractor requests using an m3u8-style path.",
                         "parameters": [
                             {"name": "host", "in": "query", "schema": {"type": "string"}},
                             {"name": "url", "in": "query", "schema": {"type": "string"}},
